@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>在庫管理(ローカルストレージ)</title>
+</head>
+<body>
+<h1>ローカルストレージによる在庫管理</h1>
+
+<form name="js">
+function：<input type="text" name="ifnc" value="">
+ 関数→(add,sub,check,reset)<br>
+name：<input type="text" name="inam" value="">
+ reset以外なら必要。空欄は名無しの在庫。<br>
+amount：<input type="text" name="iamo" value="">
+ 整数。空欄は1。<br>
+<input type="button" value="実行" onclick="stocker()"><br>
+<p id="outbox">output</p><br>
+</form>
+
+<script>
+
+/*var fnc =getParam('function');
+var nam = getParam('name');
+var amo = getParam('amount');
+var pri = getParam('price');
+*/
+
+var ccc3=0;
+var ccc4=0;
+var ch = new Array('0','1','2','3','4','5','6','7','8','9',);
+
+function stocker(){
+var elem = document.getElementById("outbox");
+var fnc = document.js.ifnc.value;
+var nam = document.js.inam.value
+var amo = document.js.iamo.value;
+
+/////////////////////////////////////////////////
+if(amo!=null){
+var len = amo.length;
+var c = new Array(len);
+var ccnt =0;
+for(var i=0;i<len-1;i++){
+  c[i] = amo.slice(i,i+1);
+}
+c[len-1] = amo.slice(len-1);
+for(var i=0;i<len;i++){
+  for(var j=0;j<10;j++){
+    if(c[i]==ch[j]){
+      ccnt++;
+    }
+  }
+}
+var ccc3 = parseInt(len)-parseInt(ccnt);
+if(ccc3 != 0){
+  elem.innerHTML="エラー。amountは正整数を入力してください。";
+}
+}
+///////////////////////////////////////////////////
+
+if(ccc3==0){
+
+if(fnc=='reset'){
+//////////////////////////////////////////////////////
+localStorage.clear();//全部削除
+elem.innerHTML="全在庫を削除しました。";
+//////////////////////////////////////////////////////
+}
+
+
+if(fnc=='add'){
+//////////////////////////////////////////////////////
+if(!amo) {
+  amo=1;//amount省略時は1
+}
+
+var now = localStorage.getItem(nam);//以前の値の読み込み
+
+if(now==null) {//値がなければ新たに定義
+  var nowx = amo;
+}
+else{//値があれば加算
+  var nowx = parseInt(now) + parseInt(amo);
+}
+
+localStorage.removeItem(nam);
+localStorage.setItem(nam,nowx);
+elem.innerHTML = nam+"を"+amo+"個増やして"+nowx+"個になりました。";
+//////////////////////////////////////////////////////
+}
+
+if(fnc=='check'){
+//////////////////////////////////////////////////////
+var out = localStorage.getItem(nam);//読み込み
+elem.innerHTML = nam+"は"+out+"個あります";
+/*
+if(out != 'null'){
+  elem.innerHTML = nam+": "+out;
+}
+else{
+  var leng = localStorage.length;
+  for(var i=0;i<leng;i++){
+    var namei = localStorage.key(i);
+    var numi = localStorage.getItem(namei);
+    elem.innerHTML = namei+": "+numi;
+  }
+
+}
+*/
+//////////////////////////////////////////////////////
+}
+
+if(fnc=='sub'){
+//////////////////////////////////////////////////////
+if(!amo) {
+  amo=1;//amount省略時は1
+}
+var now = localStorage.getItem(nam);//以前の値の読み込み
+
+var nowx = parseInt(now) - parseInt(amo);//売れた数を引く
+
+if(isNaN(nowx)){
+  elem.innerHTML = nam+"は登録されていません";
+}
+else{
+  localStorage.setItem(nam,nowx);
+  elem.innerHTML = nam+"を"+amo+"個減らして"+nowx+"個になりました。";
+}
+//////////////////////////////////////////////////////
+}
+
+}
+}
+
+</script>
+
+
+<a href="index.html">homeに戻る</a><br>
+
+</body>
+</html>
